@@ -45,10 +45,10 @@ public class Mamalia : Hewan
 
 public class Reptil : Hewan
 {
-    public int PanjangTubuh { get; set; }
+    public double PanjangTubuh { get; set; }
     public Reptil(string name, int age, double panjangTubuh) : base(name, age)
     {
-        PanjangTubuh = PanjangTubuh;
+        PanjangTubuh = panjangTubuh;
     }
     public override void InfoHewan()
     {
@@ -94,7 +94,7 @@ public class Gajah : Mamalia
 
 public class Ular : Reptil
 {
-    public Ular(string name, int age, int panjangTubuh) : base(name, age, panjangTubuh) { }
+    public Ular(string name, int age, double panjangTubuh) : base(name, age, panjangTubuh) { }
 
     public override void InfoHewan()
     {
@@ -112,7 +112,7 @@ public class Ular : Reptil
 
 public class Buaya : Reptil
 {
-    public Buaya(string name, int age, int panjangTubuh) : base(name, age, panjangTubuh) { }
+    public Buaya(string name, int age, double panjangTubuh) : base(name, age, panjangTubuh) { }
     public override void InfoHewan()
     {
         base.InfoHewan();
