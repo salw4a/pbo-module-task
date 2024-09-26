@@ -102,7 +102,7 @@ public class Ular : Reptil
     }
     public void Merayap()
     {
-        Console.WriteLine("Ular merayap dengan pelan atau cepat");
+        Console.WriteLine($"{Name} merayap dengan pelan atau cepat");
     }
     public override string Suara()
     {
@@ -209,6 +209,7 @@ public class Program
         singa1.InfoHewan();
         Console.WriteLine();
         ular4.Merayap();
+        ular1.Merayap();
         Console.WriteLine();
 
         Reptil reptil = new Buaya("Caiman", 3, 138);
