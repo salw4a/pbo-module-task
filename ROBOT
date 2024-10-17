@@ -1,0 +1,188 @@
+using System;
+using System.Numerics;
+
+public abstract class BaseRobot
+{
+    public string Name { get; set; }
+    public int Health { get; set; }
+    public int Armor { get; set; }
+    public int Energy { get; set; }
+    public int Damage { get; set; }
+    public int CooldownBasic { get; set; }
+    public int CooldownSkill { get; set; }
+
+    public abstract int Serang();
+    public abstract int GunakanKemampuan(int kemampuan);
+    public abstract void CetakInfo();
+}
+
+interface IKemampuan
+{
+    int BasicAttack();
+    int Tank();
+    int Thunder();
+    int Electric();
+}
+
+class Robot : BaseRobot, IKemampuan
+{
+    public int BasicAttack()
+    {
+        return Damage;
+    }
+
+    public override int Serang()
+    {
+        if (Energy >= CooldownBasic)
+        {
+            Energy -= CooldownBasic;
+            return BasicAttack();
+        }
+        else
+        {
+            Console.WriteLine("Not enough energy to perform a basic attack!");
+            return 0;
+        }
+    }
+
+    public int Tank()
+    {
+        Energy -= CooldownSkill;
+        Health += 60;
+        Console.WriteLine("Increased defense!");
+        return 0;
+    }
+
+    public int Thunder()
+    {
+        Energy -= CooldownSkill;
+        return Damage + 100;
+    }
+
+    public int Electric()
+    {
+        Energy -= CooldownSkill;
+        return Damage - 85;
+    }
+
+    public override int GunakanKemampuan(int kemampuan)
+    {
+        switch (kemampuan)
+        {
+            case 1:
+                return Tank();
+            case 2:
+                return Thunder();
+            case 3:
+                return Electric();
+            default:
+                Health += 250;
+                Energy += 55;
+                Console.WriteLine("Healing... Restoring health and energy!");
+                return 0;
+        }
+    }
+
+    public override void CetakInfo()
+    {
+        Console.WriteLine($"Name    : {Name}");
+        Console.WriteLine($"Health  : {Health}");
+        Console.WriteLine($"Energy  : {Energy}");
+        Console.WriteLine($"Armor   : {Armor}");
+    }
+}
+
+public abstract class BasicBosRobot
+{
+    public string Name { get; set; }
+    public int Health { get; set; }
+
+    public abstract int Diserang(int damage);
+    public abstract void Died();
+}
+
+class BosRobot : BasicBosRobot
+{
+    public override int Diserang(int damage)
+    {
+        Health -= damage;
+        return Health;
+    }
+
+    public override void Died()
+    {
+        Console.WriteLine($"{Name} has died.");
+    }
+}
+
+public class Program
+{
+    static void Main(string[] args)
+    {
+        Robot robot = new Robot
+        {
+            Name = "Alienbot",
+            Health = 1000,
+            Armor = 250,
+            Energy = 500,
+            Damage = 200,
+            CooldownBasic = 25,
+            CooldownSkill = 45
+        };
+
+        BosRobot opp = new BosRobot
+        {
+            Name = "Demon",
+            Health = 1100
+        };
+
+        Console.WriteLine("Press Enter to start the game...");
+        Console.ReadLine();
+
+        while (opp.Health > 0)
+        {
+            Console.WriteLine("====================");
+            robot.CetakInfo();
+            Console.WriteLine($"{opp.Name}'s Health: {opp.Health}");
+            Console.WriteLine($"Choose an action for {robot.Name} (Energy: {robot.Energy}, Damage: {robot.Damage}):");
+            Console.WriteLine("1. Basic Attack");
+            Console.WriteLine("2. Thunder");
+            Console.WriteLine("3. Electric");
+            Console.WriteLine("4. Tank");
+            Console.WriteLine("5. Heal");
+
+            string decision = Console.ReadLine();
+
+            switch (decision)
+            {
+                case "1":
+                    Console.WriteLine("Attacking the opponent!");
+                    opp.Diserang(robot.Serang());
+                    break;
+                case "2":
+                    Console.WriteLine("Attacking with Thunder!");
+                    opp.Diserang(robot.GunakanKemampuan(2));
+                    break;
+                case "3":
+                    Console.WriteLine("Attacking with Electric!");
+                    opp.Diserang(robot.GunakanKemampuan(3)); 
+                    Console.WriteLine($"{opp.Name} is slowed down!");
+                    break;
+                case "4":
+                    robot.GunakanKemampuan(1); 
+                    break;
+                case "5":
+                    robot.GunakanKemampuan(0); 
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice!");
+                    break;
+            }
+
+            Console.WriteLine($"Opponent's health is now: {opp.Health}");
+        }
+
+        opp.Died();
+        Console.WriteLine("The opponent is dead. You win!");
+    }
+}
